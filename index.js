@@ -13,15 +13,16 @@ app.use(express.static(__dirname + "/public"));
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
-app.get("/", (req, res) => {
-  res.render("index");
-});
+// routes
 
-app.get("/:page", (req, res) => {
-  const { page } = req.params;
-  res.render(`${page}`, {
-    banner: `${page}`
-  });
+const productRouter = require("./routes/productRouter");
+const indexRouter = require("./routes/indexRouter");
+app.use("/", indexRouter);
+app.use("/products", productRouter);
+
+app.get("/sync", (req, res) => {
+  const models = require("./models");
+  models.sequelize.sync().then(() => res.send("database synced"));
 });
 
 app.listen(process.env.PORT || 3000);
