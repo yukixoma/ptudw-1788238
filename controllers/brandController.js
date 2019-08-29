@@ -1,10 +1,10 @@
 const controller = {};
-const { Category, Product } = require("../models");
+const { Brand, Product } = require("../models");
 
 controller.getAll = async () => {
-  const data = await Category.findAll({
+  const data = await Brand.findAll({
     include: [{ model: Product }],
-    attributes: ["id", "name", "imagepath", "summary"]
+    attributes: ["id", "name", "imagepath"]
   });
   return data;
 };

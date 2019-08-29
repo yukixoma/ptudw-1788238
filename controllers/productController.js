@@ -1,12 +1,19 @@
 const controller = {};
-const models = require("../models");
-const { Product } = models;
+const { Product, Category } = require("../models");
+
+controller.getAll = async () => {
+  const data = await Product.findAll({
+    include: [{ model: Category }],
+    attributes: ["id", "name", "imagepath", "price"]
+  });
+  return data;
+};
 
 controller.getTrendingProducts = async () => {
   const data = await Product.findAll({
     order: [["overallReview", "DESC"]],
     limit: 8,
-    include: [{ model: models.Category }],
+    include: [{ model: Category }],
     attributes: ["id", "name", "imagepath", "price"]
   });
   return data;

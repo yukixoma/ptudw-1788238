@@ -14,12 +14,17 @@ app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
 // routes
-
 const productRouter = require("./routes/productRouter");
 const indexRouter = require("./routes/indexRouter");
 app.use("/", indexRouter);
 app.use("/products", productRouter);
 
+app.get("/:page", (req, res) => {
+  const { page } = req.params;
+  res.render(`${page}`);
+});
+
+// Sync database
 app.get("/sync", (req, res) => {
   const models = require("./models");
   models.sequelize.sync().then(() => res.send("database synced"));
