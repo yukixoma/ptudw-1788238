@@ -14,8 +14,10 @@
               <form action="#">
                 <ul>
                   {{#each categories}}
-                  <li class="filter-list"><input class="pixel-radio" type="radio" id="men" name="brand">
-                    <label for="men">
+                  <li class="filter-list">
+                    <input class="pixel-radio" type="radio" id="category{{id}}" name="category"
+                      onclick="selectParam('category', {{id}}, 'true')">
+                    <label for="category{{id}}">
                       {{name}}<span> ({{Products.length}})</span>
                     </label>
                   </li>
@@ -32,8 +34,10 @@
             <form action="#">
               <ul>
                 {{#each brands}}
-                <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand">
-                  <label for="apple">
+                <li class="filter-list">
+                  <input class="pixel-radio" type="radio" id="brand{{id}}" name="brand"
+                    onclick="selectParam('brand',{{id}})">
+                  <label for="brand{{id}}">
                     {{ name }}<span>({{ Products.length }})</span>
                   </label>
                 </li>
@@ -46,8 +50,10 @@
             <form action="#">
               <ul>
                 {{#each colors}}
-                <li class="filter-list"><input class="pixel-radio" type="radio" id="black" name="color">
-                  <label for="black">
+                <li class="filter-list">
+                  <input class="pixel-radio" type="radio" id="color{{id}}" name="color"
+                    onclick="selectParam('color',{{id}})">
+                  <label for="color{{id}}">
                     {{ name }}<span>({{ ProductColors.length }})</span>
                   </label>
                 </li>
@@ -185,3 +191,34 @@
   </div>
 </section>
 <!-- ================ Subscribe section end ================= -->
+
+<script>
+  const urlParams = new URLSearchParams(location.search);
+  const params = {
+    category: 0,
+    brand: 0,
+    color: 0,
+    min: 0,
+    max: 100
+  }
+  for (const key in params) {
+    if (!urlParams.has(key)) {
+      urlParams.append(key, params[key])
+    }
+    const controll = document.getElementById(`${key}${urlParams.get(key)}`);
+    if (controll) controll.setAttribute("checked", true);
+  }
+
+
+
+  function selectParam(key, value, reset = false) {
+    if (reset) {
+      for (const key in params) {
+        urlParams.set(key, params[key])
+      }
+    }
+    urlParams.set(key, value)
+    const url = `/products?${urlParams.toString()}`;
+    window.location.href = url;
+  }
+</script>

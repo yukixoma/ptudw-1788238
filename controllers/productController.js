@@ -6,14 +6,33 @@ const {
   Category,
   Comment,
   User,
-  Review
+  Review,
+  ProductColor
 } = require("../models");
+const Sequelize = require("sequelize");
+const { Op } = Sequelize;
 
-controller.getAll = async () => {
-  const data = await Product.findAll({
+controller.getAll = async query => {
+  const option = {
     include: [{ model: Category }],
-    attributes: ["id", "name", "imagepath", "price"]
-  });
+    attributes: ["id", "name", "imagepath", "price"],
+    where: {
+      price: {
+        [Op.gte]: query.min,
+        [Op.lte]: query.max
+      }
+    }
+  };
+  if (query.category > 0) option.where.categoryId = query.category;
+  if (query.brand > 0) option.where.brandId = query.brand;
+  if (query.color > 0)
+    option.include.push({
+      model: ProductColor,
+      attributes: [],
+      where: { colorId: query.color }
+    });
+
+  const data = await Product.findAll(option);
   return data;
 };
 
@@ -40,7 +59,6 @@ controller.getTopProduct = async () => {
     if (i % 3 == 0) index++;
     groups[index].push(product);
   }
-  console.log(groups[0]);
   return groups;
 };
 
