@@ -1,8 +1,12 @@
 const express = require("express");
 const expressHbs = require("express-handlebars");
-const helper = require("./controllers/helper");
 
 const app = express();
+
+// View engine
+const helper = require("./controllers/helper");
+const hbsPaginate = require("express-handlebars-paginate");
+
 const hbs = expressHbs.create({
   extname: "hbs",
   defaultLayout: "layout",
@@ -10,7 +14,8 @@ const hbs = expressHbs.create({
   partialsDir: __dirname + "/views/partials",
   helpers: {
     createStarList: helper.createStarList,
-    createStars: helper.createStars
+    createStars: helper.createStars,
+    createPagination: hbsPaginate.createPagination
   }
 });
 

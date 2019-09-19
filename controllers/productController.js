@@ -24,7 +24,12 @@ controller.getAll = async query => {
     }
   };
   if (query.category > 0) option.where.categoryId = query.category;
+
+  if (query.search != "")
+    option.where.name = { [Op.iLike]: `%${query.search}%` };
+
   if (query.brand > 0) option.where.brandId = query.brand;
+
   if (query.color > 0)
     option.include.push({
       model: ProductColor,
@@ -32,7 +37,30 @@ controller.getAll = async query => {
       where: { colorId: query.color }
     });
 
-  const data = await Product.findAll(option);
+  if (query.limit > 0) {
+    option.limit = query.limit;
+    option.offset = query.limit * (query.page - 1);
+  }
+
+  if (query.sort) {
+    switch (query.sort) {
+      case "name":
+        option.order = [["name", "ASC"]];
+        break;
+      case "price":
+        option.order = [["price", "ASC"]];
+        break;
+      case "overallReview":
+        option.order = [["overallReview", "DESC"]];
+        break;
+
+      default:
+        option.order = [["name", "ASC"]];
+        break;
+    }
+  }
+
+  const data = await Product.findAndCountAll(option);
   return data;
 };
 

@@ -81,25 +81,27 @@
         <!-- Start Filter Bar -->
         <div class="filter-bar d-flex flex-wrap align-items-center">
           <div class="sorting">
-            <select>
-              <option value="1">Default sorting</option>
-              <option value="1">Default sorting</option>
-              <option value="1">Default sorting</option>
+            <select id="sort" onchange="selectParam('sort', this.value)">
+              <option value="name">Default sorting by name</option>
+              <option value="price">Sorting by price low to high</option>
+              <option value="overallReview">Sorting by reviews high to low</option>
             </select>
           </div>
           <div class="sorting mr-auto">
-            <select>
-              <option value="1">Show 12</option>
-              <option value="1">Show 12</option>
-              <option value="1">Show 12</option>
+            <select id="limit" onchange="selectParam('limit', this.value)">
+              <option value="9">Show 9</option>
+              <option value="18">Show 18</option>
+              <option value="36">Show 36</option>
             </select>
           </div>
           <div>
             <div class="input-group filter-bar-search">
-              <input type="text" placeholder="Search">
-              <div class="input-group-append">
-                <button type="button"><i class="ti-search"></i></button>
-              </div>
+              <form action="/products" method="GET">
+                <input type="text" name="search" placeholder="Search">
+                <div class="input-group-append">
+                  <button type="submit"><i class="ti-search"></i></button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -126,8 +128,13 @@
               </div>
             </div>
             {{/each}}
-
           </div>
+          <div class="row justify-content-center">
+            <nav aria-label="Page navigation example" id="pagination">
+              {{{ createPagination pagination paginationClass="pagination"}}}
+            </nav>
+          </div>
+
         </section>
         <!-- End Best Seller -->
       </div>
@@ -183,14 +190,13 @@
           <div style="position: absolute; left: -5000px;">
             <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
           </div>
-
         </form>
       </div>
-
     </div>
   </div>
 </section>
 <!-- ================ Subscribe section end ================= -->
+
 
 <script>
   const urlParams = new URLSearchParams(location.search);
@@ -199,14 +205,16 @@
     brand: 0,
     color: 0,
     min: 0,
-    max: 100
+    max: 100,
+    limit: 9,
+    page: 1,
+    sort: "name",
+    search: ""
   }
   for (const key in params) {
     if (!urlParams.has(key)) {
       urlParams.append(key, params[key])
     }
-    const controll = document.getElementById(`${key}${urlParams.get(key)}`);
-    if (controll) controll.setAttribute("checked", true);
   }
 
 
@@ -221,4 +229,26 @@
     const url = `/products?${urlParams.toString()}`;
     window.location.href = url;
   }
+
+  $(document).ready(() => {
+    console.log(urlParams);
+    ["category", "brand", "color"].forEach(key => {
+      const controll = document.getElementById(`${key}${urlParams.get(key)}`);
+      if (controll) controll.setAttribute("checked", true);
+    })
+    
+    $("#sort").val(urlParams.get("sort"));
+    $("#limit").val(urlParams.get("limit"));
+
+    $("#pagination li").addClass("page-item");
+    $("#pagination li a").addClass("page-link");
+    $("#pagination li a").each((index, item) => {
+      const curPage = urlParams.get("page");
+      urlParams.set("page", index);
+      const href = "/products?" + urlParams.toString();
+      item.setAttribute("href", href);
+      urlParams.set("page", curPage);
+    })
+
+  });
 </script>

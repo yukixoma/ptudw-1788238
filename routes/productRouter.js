@@ -12,14 +12,24 @@ router.get("/", async (req, res, next) => {
   if (query.color == null || isNaN(query.color)) query.color = 0;
   if (query.min == null || isNaN(query.min)) query.min = 0;
   if (query.max == null || isNaN(query.max)) query.max = 100;
+  if (query.sort == null) query.sort = "name";
+  if (query.limit == null || isNaN(query.limit)) query.limit = 9;
+  if (query.page == null || isNaN(query.page)) query.page = 1;
+  if (query.search == null || query.search.trim() == null) query.search = "";
 
   try {
     res.locals.banner = "Product";
-    res.locals.categories = await categoryController.getAll();
+    res.locals.categories = await categoryController.getAll(query);
     res.locals.brands = await brandController.getAll(query);
     res.locals.colors = await colorController.getAll(query);
-    res.locals.products = await productController.getAll(query);
     res.locals.topProducts = await productController.getTopProduct();
+    const productData = await productController.getAll(query);
+    res.locals.products = productData.rows;
+    res.locals.pagination = {
+      page: parseInt(query.page),
+      limit: parseInt(query.limit),
+      totalRows: productData.count
+    };
     res.render("category");
   } catch (error) {
     next(error);
