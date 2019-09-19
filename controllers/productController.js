@@ -14,7 +14,7 @@ const { Op } = Sequelize;
 
 controller.getAll = async query => {
   const option = {
-    include: [{ model: Category }],
+    include: [],
     attributes: ["id", "name", "imagepath", "price"],
     where: {
       price: {
@@ -30,12 +30,13 @@ controller.getAll = async query => {
 
   if (query.brand > 0) option.where.brandId = query.brand;
 
-  if (query.color > 0)
+  if (query.color > 0) {
     option.include.push({
       model: ProductColor,
       attributes: [],
       where: { colorId: query.color }
     });
+  }
 
   if (query.limit > 0) {
     option.limit = query.limit;

@@ -230,13 +230,12 @@
     window.location.href = url;
   }
 
-  $(document).ready(() => {
-    console.log(urlParams);
+  $(document).ready(() => {    
     ["category", "brand", "color"].forEach(key => {
-      const controll = document.getElementById(`${key}${urlParams.get(key)}`);
-      if (controll) controll.setAttribute("checked", true);
+      const controll = $(`#${key}${urlParams.get(key)}`);
+      if (controll) controll.attr("checked", true);
     })
-    
+
     $("#sort").val(urlParams.get("sort"));
     $("#limit").val(urlParams.get("limit"));
 

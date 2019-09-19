@@ -15,7 +15,7 @@ router.get("/", async (req, res, next) => {
   if (query.sort == null) query.sort = "name";
   if (query.limit == null || isNaN(query.limit)) query.limit = 9;
   if (query.page == null || isNaN(query.page)) query.page = 1;
-  if (query.search == null || query.search.trim() == null) query.search = "";
+  if (query.search == null || query.search.trim() == "") query.search = "";
 
   try {
     res.locals.banner = "Product";
