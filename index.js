@@ -3,6 +3,35 @@ const expressHbs = require("express-handlebars");
 
 const app = express();
 
+// Body parser
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Cookie parser
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+// Session
+const session = require("express-session");
+app.use(
+  session({
+    cookie: { httpOnly: true, maxAge: 30 * 24 * 60 * 1000 },
+    secret: "s3cret",
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+// Cart controller
+const Cart = require("./controllers/cartController");
+app.use((req, res, next) => {
+  const cart = new Cart(req.session.cart ? req.session.cart : {});
+  req.session.cart = cart;
+  res.locals.totalQuantity = cart.totalQuantity;
+  next();
+});
+
 // View engine
 const helper = require("./controllers/helper");
 const hbsPaginate = require("express-handlebars-paginate");
@@ -24,10 +53,13 @@ app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
 // routes
-const productRouter = require("./routes/productRouter");
+
 const indexRouter = require("./routes/indexRouter");
 app.use("/", indexRouter);
+const productRouter = require("./routes/productRouter");
 app.use("/products", productRouter);
+const cartRouter = require("./routes/cartRouter");
+app.use("/cart", cartRouter);
 
 app.get("/:page", (req, res) => {
   const { page } = req.params;

@@ -14,8 +14,8 @@ const { Op } = Sequelize;
 
 controller.getAll = async query => {
   const option = {
-    include: [],
-    attributes: ["id", "name", "imagepath", "price"],
+    include: [{ model: Category }],
+    attributes: ["id", "name", "imagepath", "price", "categoryId"],
     where: {
       price: {
         [Op.gte]: query.min,
