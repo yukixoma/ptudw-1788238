@@ -70,3 +70,15 @@ function clearCart() {
     });
   }
 }
+
+function showReply(parentCommentId, fullname) {
+  $("#reply-for").css("display", "");
+  $("#reply").html(`Reply ${fullname}`);
+  $("#parentCommentId").val(parentCommentId);
+}
+
+function removeReply() {
+  $("#reply-for").css("display", "none");
+  $("#reply").html("");
+  $("#parentCommentId").val("");
+}

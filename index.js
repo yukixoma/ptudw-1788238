@@ -60,6 +60,8 @@ const productRouter = require("./routes/productRouter");
 app.use("/products", productRouter);
 const cartRouter = require("./routes/cartRouter");
 app.use("/cart", cartRouter);
+const commentRouter = require("./routes/commentRouter");
+app.use("/comments", commentRouter);
 
 app.get("/:page", (req, res) => {
   const { page } = req.params;
