@@ -82,3 +82,37 @@ function removeReply() {
   $("#reply").html("");
   $("#parentCommentId").val("");
 }
+
+function checkStars(ratings) {
+  const stars = document.getElementsByClassName("ratings-star");
+  for (let i = 0; i < 5; i++) {
+    if (i < ratings) {
+      stars[i].classList.remove("far");
+      stars[i].classList.add("fa");
+    } else {
+      stars[i].classList.remove("fa");
+      stars[i].classList.add("far");
+    }
+  }
+  $("#rating").val(ratings);
+  const starNames = [
+    "Please rating this product!",
+    "Worst",
+    "Bad",
+    "OK",
+    "Good",
+    "Outstanding"
+  ];
+  $("#starName").html(starNames[ratings]);
+}
+
+function highlightStars(ratings) {
+  const currentStarVal = $("#rating").val();
+  checkStars(ratings);
+  $("#rating").val(currentStarVal);
+}
+
+function resetStars() {
+  const currentStarVal = $("#rating").val();
+  checkStars(currentStarVal);
+}

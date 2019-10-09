@@ -44,7 +44,8 @@ const hbs = expressHbs.create({
   helpers: {
     createStarList: helper.createStarList,
     createStars: helper.createStars,
-    createPagination: hbsPaginate.createPagination
+    createPagination: hbsPaginate.createPagination,
+    roundNumber: helper.roudNumber
   }
 });
 
@@ -62,6 +63,8 @@ const cartRouter = require("./routes/cartRouter");
 app.use("/cart", cartRouter);
 const commentRouter = require("./routes/commentRouter");
 app.use("/comments", commentRouter);
+const reviewRouter = require("./routes/reviewRouter");
+app.use("/reviews", reviewRouter);
 
 app.get("/:page", (req, res) => {
   const { page } = req.params;

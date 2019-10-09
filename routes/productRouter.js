@@ -4,6 +4,7 @@ const categoryController = require("../controllers/categoryController");
 const brandController = require("../controllers/brandController");
 const colorController = require("../controllers/colorController");
 const productController = require("../controllers/productController");
+const reviewController = require("../controllers/reviewController");
 
 router.get("/", async (req, res, next) => {
   const { query } = req;
@@ -41,6 +42,10 @@ router.get("/:id", async (req, res) => {
   res.locals.banner = "Shop Single";
   res.locals.product = await productController.getById(id);
   res.locals.topProducts = await productController.getTopProduct();
+  res.locals.userReview = {};
+  const review = await reviewController.getUserReviewProduct(1, id);
+  if (review) res.locals.userReview = review;
+  else res.locals.userReview.rating = 0;
   res.render("single-product");
 });
 

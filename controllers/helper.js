@@ -26,4 +26,8 @@ function createStarList(stars = []) {
   `;
 }
 
-module.exports = { createStarList, createStars };
+function roudNumber(number) {
+  return number.toFixed(2);
+}
+
+module.exports = { createStarList, createStars, roudNumber };
