@@ -1,7 +1,30 @@
 const express = require("express");
-const expressHbs = require("express-handlebars");
-
 const app = express();
+
+// View engine
+const expressHbs = require("express-handlebars");
+const helper = require("./controllers/helper");
+const hbsPaginate = require("express-handlebars-paginate");
+
+// HBS config
+const hbs = expressHbs.create({
+  extname: "hbs",
+  defaultLayout: "layout",
+  layoutsDir: __dirname + "/views/layouts",
+  partialsDir: __dirname + "/views/partials",
+  // Optional helpers
+  helpers: {
+    createStarList: helper.createStarList,
+    createStars: helper.createStars,
+    createPagination: hbsPaginate.createPagination,
+    roundNumber: helper.roudNumber
+  }
+});
+// Public static folder
+app.use(express.static(__dirname + "/public"));
+// Use view engine
+app.engine("hbs", hbs.engine);
+app.set("view engine", "hbs");
 
 // Body parser
 const bodyParser = require("body-parser");
@@ -32,29 +55,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// View engine
-const helper = require("./controllers/helper");
-const hbsPaginate = require("express-handlebars-paginate");
-
-const hbs = expressHbs.create({
-  extname: "hbs",
-  defaultLayout: "layout",
-  layoutsDir: __dirname + "/views/layouts",
-  partialsDir: __dirname + "/views/partials",
-  helpers: {
-    createStarList: helper.createStarList,
-    createStars: helper.createStars,
-    createPagination: hbsPaginate.createPagination,
-    roundNumber: helper.roudNumber
-  }
-});
-
-app.use(express.static(__dirname + "/public"));
-app.engine("hbs", hbs.engine);
-app.set("view engine", "hbs");
-
-// routes
-
+// Routes
 const indexRouter = require("./routes/indexRouter");
 app.use("/", indexRouter);
 const productRouter = require("./routes/productRouter");
